@@ -68,9 +68,12 @@ function App() {
     <div className="app">
       <h1>My Todo List</h1>
 
-      {/* Issue 11: Tidak ada label untuk accessibility */}
       <div className="input-section">
+        <label htmlFor="todo-input" className="visually-hidden">
+          Todo text
+        </label>
         <input
+          id="todo-input"
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -115,6 +118,7 @@ function App() {
               type="checkbox"
               checked={todo.completed}
               onChange={() => toggleTodo(todo.id)}
+              aria-label={todo.text}
             />
             <span>{todo.text}</span>
             <button
