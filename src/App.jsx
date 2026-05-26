@@ -15,10 +15,9 @@ function App() {
     }
   }, [])
   
-  // Issue 4: useEffect yang terlalu sering run
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos))
-  })
+  }, [todos])
   
   // Issue 5: Function yang tidak di-memoize, re-create setiap render
   const addTodo = () => {
