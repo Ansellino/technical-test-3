@@ -47,6 +47,16 @@ function App() {
     ))
   }, [])
 
+  const handleInputChange = useCallback((e) => {
+    setInput(e.target.value)
+  }, [])
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter') {
+      addTodo()
+    }
+  }, [addTodo])
+
   const filteredTodos = useMemo(() => {
     if (filter === 'active') {
       return todos.filter(todo => !todo.completed)
@@ -76,12 +86,8 @@ function App() {
           id="todo-input"
           type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              addTodo()
-            }
-          }}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           placeholder="What needs to be done?"
         />
         <button onClick={addTodo}>Add</button>
