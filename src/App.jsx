@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react'
 
-// Issue 1: Inline API key (security issue)
-const API_KEY = 'sk-1234567890abcdef'
-
 function App() {
   // Issue 2: State management bisa lebih baik
   const [todos, setTodos] = useState([])
@@ -124,8 +121,7 @@ function App() {
               checked={todo.completed}
               onChange={() => toggleTodo(todo.id)}
             />
-            {/* Issue 15: Potential XSS jika text dari user input */}
-            <span dangerouslySetInnerHTML={{ __html: todo.text }} />
+            <span>{todo.text}</span>
             <button 
               className="delete-btn"
               onClick={() => deleteTodo(todo.id)}
@@ -142,7 +138,6 @@ function App() {
       
       {/* Issue 16: Debug code yang tertinggal */}
       {console.log('Rendering with todos:', todos)}
-      {console.log('API Key:', API_KEY)}
     </div>
   )
 }
