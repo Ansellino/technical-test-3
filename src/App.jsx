@@ -122,33 +122,32 @@ function App() {
       </div>
 
       <div className="todo-list">
-        {/* Issue 13: Tidak ada handling untuk empty state */}
-        {filteredTodos.map((todo) => (
-          // Issue 14: Key menggunakan index bisa lebih baik dengan ID
-          <div key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={() => toggleTodo(todo.id)}
-              aria-label={todo.text}
-            />
-            <span>{todo.text}</span>
-            <button
-              className="delete-btn"
-              onClick={() => deleteTodo(todo.id)}
-            >
-              Delete
-            </button>
-          </div>
-        ))}
+        {filteredTodos.length === 0 ? (
+          <p className="empty-state">No todos here.</p>
+        ) : (
+          filteredTodos.map((todo) => (
+            <div key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                onChange={() => toggleTodo(todo.id)}
+                aria-label={todo.text}
+              />
+              <span>{todo.text}</span>
+              <button
+                className="delete-btn"
+                onClick={() => deleteTodo(todo.id)}
+              >
+                Delete
+              </button>
+            </div>
+          ))
+        )}
       </div>
 
       <div className="stats">
         <p>Total: {stats.total} | Active: {stats.active} | Completed: {stats.completed}</p>
       </div>
-
-      {/* Issue 16: Debug code yang tertinggal */}
-      {console.log('Rendering with todos:', todos)}
     </div>
   )
 }
