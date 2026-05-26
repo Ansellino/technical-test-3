@@ -6,12 +6,14 @@ function App() {
   const [input, setInput] = useState('')
   const [filter, setFilter] = useState('all')
 
-  // Issue 3: useEffect tanpa dependency array yang tepat
   useEffect(() => {
-    // Load from localStorage
-    const saved = localStorage.getItem('todos')
-    if (saved) {
-      setTodos(JSON.parse(saved))
+    try {
+      const saved = localStorage.getItem('todos')
+      if (saved) {
+        setTodos(JSON.parse(saved))
+      }
+    } catch {
+      setTodos([])
     }
   }, [])
 
