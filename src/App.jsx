@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 
 function App() {
   // Issue 2: State management bisa lebih baik
   const [todos, setTodos] = useState([])
   const [input, setInput] = useState('')
   const [filter, setFilter] = useState('all')
-  
+
   // Issue 3: useEffect tanpa dependency array yang tepat
   useEffect(() => {
     // Load from localStorage
@@ -14,18 +14,17 @@ function App() {
       setTodos(JSON.parse(saved))
     }
   }, [])
-  
+
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos))
   }, [todos])
-  
-  // Issue 5: Function yang tidak di-memoize, re-create setiap render
-  const addTodo = () => {
+
+  const addTodo = useCallback(() => {
     if (input.trim() === '') {
       alert('Please enter a todo')
       return
     }
-    
+
     // Issue 6: Menggunakan Date.now() sebagai ID (bisa collision)
     const newTodo = {
       id: Date.now(),
@@ -33,24 +32,23 @@ function App() {
       completed: false,
       createdAt: new Date().toISOString()
     }
-    
-    setTodos([...todos, newTodo])
+
+    setTodos((prev) => [...prev, newTodo])
     setInput('')
-  }
-  
+  }, [input])
+
   // Issue 7: Tidak ada error handling
-  const deleteTodo = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id))
-  }
-  
-  const toggleTodo = (id) => {
-    setTodos(todos.map(todo => 
+  const deleteTodo = useCallback((id) => {
+    setTodos((prev) => prev.filter(todo => todo.id !== id))
+  }, [])
+
+  const toggleTodo = useCallback((id) => {
+    setTodos((prev) => prev.map(todo =>
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     ))
-  }
-  
-  // Issue 8: Logic filtering yang bisa dipindah ke useMemo
-  const getFilteredTodos = () => {
+  }, [])
+
+  const filteredTodos = useMemo(() => {
     if (filter === 'active') {
       return todos.filter(todo => !todo.completed)
     }
@@ -58,23 +56,22 @@ function App() {
       return todos.filter(todo => todo.completed)
     }
     return todos
-  }
-  
-  // Issue 9: Calculation yang tidak perlu di setiap render
-  const stats = {
+  }, [todos, filter])
+
+  const stats = useMemo(() => ({
     total: todos.length,
     completed: todos.filter(t => t.completed).length,
     active: todos.filter(t => !t.completed).length
-  }
-  
+  }), [todos])
+
   // Issue 10: Inline event handler dengan arrow function (re-create setiap render)
   return (
     <div className="app">
       <h1>My Todo List</h1>
-      
+
       {/* Issue 11: Tidak ada label untuk accessibility */}
       <div className="input-section">
-        <input 
+        <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -87,41 +84,41 @@ function App() {
         />
         <button onClick={addTodo}>Add</button>
       </div>
-      
+
       {/* Issue 12: Inline styles (inconsistent dengan CSS file) */}
       <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
-        <button 
+        <button
           onClick={() => setFilter('all')}
           style={{ background: filter === 'all' ? '#28a745' : '#007bff' }}
         >
           All
         </button>
-        <button 
+        <button
           onClick={() => setFilter('active')}
           style={{ background: filter === 'active' ? '#28a745' : '#007bff' }}
         >
           Active
         </button>
-        <button 
+        <button
           onClick={() => setFilter('completed')}
           style={{ background: filter === 'completed' ? '#28a745' : '#007bff' }}
         >
           Completed
         </button>
       </div>
-      
+
       <div className="todo-list">
         {/* Issue 13: Tidak ada handling untuk empty state */}
-        {getFilteredTodos().map((todo) => (
+        {filteredTodos.map((todo) => (
           // Issue 14: Key menggunakan index bisa lebih baik dengan ID
           <div key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
-            <input 
+            <input
               type="checkbox"
               checked={todo.completed}
               onChange={() => toggleTodo(todo.id)}
             />
             <span>{todo.text}</span>
-            <button 
+            <button
               className="delete-btn"
               onClick={() => deleteTodo(todo.id)}
             >
@@ -130,11 +127,11 @@ function App() {
           </div>
         ))}
       </div>
-      
+
       <div className="stats">
         <p>Total: {stats.total} | Active: {stats.active} | Completed: {stats.completed}</p>
       </div>
-      
+
       {/* Issue 16: Debug code yang tertinggal */}
       {console.log('Rendering with todos:', todos)}
     </div>
