@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 
 function App() {
-  // Issue 2: State management bisa lebih baik
   const [todos, setTodos] = useState([])
   const [input, setInput] = useState('')
   const [filter, setFilter] = useState('all')
@@ -38,7 +37,6 @@ function App() {
     setInput('')
   }, [input])
 
-  // Issue 7: Tidak ada error handling
   const deleteTodo = useCallback((id) => {
     setTodos((prev) => prev.filter(todo => todo.id !== id))
   }, [])
@@ -79,7 +77,6 @@ function App() {
     active: todos.filter(t => !t.completed).length
   }), [todos])
 
-  // Issue 10: Inline event handler dengan arrow function (re-create setiap render)
   return (
     <div className="app">
       <h1>My Todo List</h1>
