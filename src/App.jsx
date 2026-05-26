@@ -57,6 +57,10 @@ function App() {
     }
   }, [addTodo])
 
+  const handleFilterClick = useCallback((e) => {
+    setFilter(e.currentTarget.dataset.filter)
+  }, [])
+
   const filteredTodos = useMemo(() => {
     if (filter === 'active') {
       return todos.filter(todo => !todo.completed)
@@ -93,23 +97,25 @@ function App() {
         <button onClick={addTodo}>Add</button>
       </div>
 
-      {/* Issue 12: Inline styles (inconsistent dengan CSS file) */}
-      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+      <div className="filter-section">
         <button
-          onClick={() => setFilter('all')}
-          style={{ background: filter === 'all' ? '#28a745' : '#007bff' }}
+          data-filter="all"
+          className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+          onClick={handleFilterClick}
         >
           All
         </button>
         <button
-          onClick={() => setFilter('active')}
-          style={{ background: filter === 'active' ? '#28a745' : '#007bff' }}
+          data-filter="active"
+          className={`filter-btn ${filter === 'active' ? 'active' : ''}`}
+          onClick={handleFilterClick}
         >
           Active
         </button>
         <button
-          onClick={() => setFilter('completed')}
-          style={{ background: filter === 'completed' ? '#28a745' : '#007bff' }}
+          data-filter="completed"
+          className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
+          onClick={handleFilterClick}
         >
           Completed
         </button>

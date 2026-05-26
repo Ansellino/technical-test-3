@@ -116,3 +116,17 @@ button:hover {
   white-space: nowrap;
   border: 0;
 }
+
+.filter-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-btn {
+  background: #007bff;
+}
+
+.filter-btn.active {
+  background: #28a745;
+}
